@@ -1,4 +1,3 @@
-`default_nettype none
 `timescale 1ns/1ps
 
 module spi_controller
@@ -8,8 +7,9 @@ module spi_controller
 
    input  wire KICK,
    output wire BUSY,
-   input  wire [63:0] DIN,
-   output wire [63:0] DOUT,
+   input  wire [31:0] DIN,
+   output wire [31:0] DOUT,
+   output wire DOUT_VALID,
 
    input wire [7:0] SCLK_HALF_PERIOD,
    input wire [7:0] CS_DELAY,
@@ -31,15 +31,17 @@ module spi_controller
     logic sclk_r;
     logic mosi_r;
     logic busy_r;
-    logic [63:0] dout_r;
+    logic [31:0] dout_r;
     logic cpol_r;
     logic cpha_r;
+    logic dout_valid_r;
 
     assign CS = cs_r;
     assign SCLK = (cpol_r == 0) ? sclk_r : ~sclk_r;
     assign MOSI = mosi_r;
     assign BUSY = busy_r;
     assign DOUT = dout_r;
+    assign DOUT_VALID = dout_valid_r;
 
     typedef enum {IDLE, PRE_CS, PRE_DATA, SEND_MOSI, RECV_MISO, POST_DATA, POST_CS} state_type;
 
@@ -47,7 +49,7 @@ module spi_controller
     logic [7:0] state_counter;
     
     logic kick_r;
-    logic [62:0] din_r;
+    logic [30:0] din_r;
     logic [7:0] sclk_half_period_r;
     logic [7:0] cs_delay_r;
     logic [7:0] data_delay_r;
@@ -68,6 +70,7 @@ module spi_controller
 	    dout_r <= 0;
 	    cpol_r <= 0;
 	    cpha_r <= 0;
+	    dout_valid_r <= 0;
 	end else begin
 	    kick_r <= KICK;
 	    case(state)
@@ -91,7 +94,7 @@ module spi_controller
 			cs_r <= 1;
 		    end
 		    state_counter <= 0;
-		    din_r <= DIN[62:0];
+		    din_r <= DIN[30:0];
 		    sclk_half_period_r <= SCLK_HALF_PERIOD > 0 ? SCLK_HALF_PERIOD : 1;
 		    cs_delay_r <= CS_DELAY;
 		    data_delay_r <= DATA_DELAY;
@@ -100,8 +103,9 @@ module spi_controller
 		    cpol_r <= CPOL;
 		    cpha_r <= CPHA;
 		    sclk_r <= 0;
-		    mosi_r <= DIN[63];
+		    mosi_r <= DIN[31];
 		    sclk_counter <= 0;
+		    dout_valid_r <= 0;
 		end
 
 		PRE_CS: begin
@@ -132,11 +136,11 @@ module spi_controller
 			sclk_r <= ~sclk_r;
 			state_counter <= 0;
 			if(cpha_r == 0 && sclk_counter[0] == 1) begin
-			    din_r <= {din_r[61:0], 1'b0};
-			    mosi_r <= din_r[62];
+			    din_r <= {din_r[29:0], 1'b0};
+			    mosi_r <= din_r[30];
 			end else if (cpha_r == 1 && sclk_counter[0] == 0 && sclk_counter > 1) begin
-			    din_r <= {din_r[61:0], 1'b0};
-			    mosi_r <= din_r[62];
+			    din_r <= {din_r[29:0], 1'b0};
+			    mosi_r <= din_r[30];
 			end
 			if(sclk_counter + 1 == {mosi_width_r, 1'b0}) begin
 			    state <= RECV_MISO;
@@ -155,12 +159,13 @@ module spi_controller
 			state_counter <= 0;
 
 			if(cpha_r == 0 && sclk_counter[0] == 0) begin
-			    dout_r <= {dout_r[62:0], MISO};
+			    dout_r <= {dout_r[30:0], MISO};
 			end else if (cpha_r == 1 && sclk_counter[0] == 1) begin
-			    dout_r <= {dout_r[62:0], MISO};
+			    dout_r <= {dout_r[30:0], MISO};
 			end
 
 			if(sclk_counter + 1 == {miso_width_r, 1'b0}) begin
+			    dout_valid_r <= 1;
 			    sclk_counter <= 0;
 			    if(data_delay_r == 0) begin
 				if(cs_delay_r == 0) begin
@@ -181,6 +186,7 @@ module spi_controller
 		end
 
 		POST_DATA: begin
+		    dout_valid_r <= 0;
 		    if (state_counter + 1 == data_delay_r) begin
 			state_counter <= 0;
 			cs_r <= 1;
@@ -195,6 +201,7 @@ module spi_controller
 		end
 
 		POST_CS: begin
+		    dout_valid_r <= 0;
 		    if (state_counter + 1 == cs_delay_r) begin
 			state_counter <= 0;
 			state <= IDLE;
@@ -211,5 +218,3 @@ module spi_controller
     end
 
 endmodule // spi_controller
-
-`default_nettype wire
