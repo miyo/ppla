@@ -62,7 +62,7 @@ module ppla
 		  repeater_repetition <= CTRL_DIN[31:16];
 		  repeater_post_margin <= CTRL_DIN[15:0];
 	      end
-	      2: spi_cnt_din <= CTRL_DOUT;
+	      2: spi_cnt_din <= CTRL_DIN;
 	      3: spi_cnt_sclk_half_period <= CTRL_DIN[7:0];
 	      4: spi_cnt_cs_delay <= CTRL_DIN[7:0];
 	      5: spi_cnt_data_delay <= CTRL_DIN[7:0];
@@ -73,14 +73,15 @@ module ppla
 		  spi_cnt_cpol <= CTRL_DIN[0];
 	      end
 	  endcase // case (CTRL_ADDR)
+	end else begin
+	  if(result_storage_addr_reset == 1) begin
+	      result_storage_addr_reset <= 0;
+	  end
+	    if(repeater_kick == 1) begin
+		repeater_kick <= 0;
+	    end
 	end
 
-	if(result_storage_addr_reset == 1) begin
-	    result_storage_addr_reset <= 0;
-	end
-	if(repeater_kick == 1) begin
-	    repeater_kick <= 0;
-	end
     end
 
     logic repeater_target_kick;
