@@ -1,3 +1,7 @@
 *~
 *.vcd
-
+project_*
+NA
+*.jou
+*.log
+obj_dir
