@@ -97,6 +97,9 @@ int main(int argc, char** argv)
     set_cpol(tb, 0);
     emit_spi(tb, 2, 0, 10, 0, 0, 32, 32, 0x94a594a5, 0xFFFFFFFF);
 
+    set_cpol(tb, 0);
+    emit_spi(tb, 2, 0, 10, 0, 0, 0, 32, 0x94a594a5, 0xFFFFFFFF);
+
     for(int i = 0; i < 50; i++){ tb->tick(); }
 
 }

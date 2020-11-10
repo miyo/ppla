@@ -125,7 +125,24 @@ module spi_controller
 		PRE_DATA: begin
 		    if (state_counter + 1 == data_delay_r) begin
 			state_counter <= 0;
-			state <= SEND_MOSI;
+			if(mosi_width_r > 0) begin
+			    state <= SEND_MOSI;
+			end else begin
+			    if(miso_width_r > 0) begin
+				state <= RECV_MISO;
+			    end else begin
+				if(data_delay_r > 0) begin
+				    state <= POST_DATA;
+				end else begin
+				    if(cs_delay_r > 0) begin
+					state <= POST_CS;
+				    end else begin
+					state <= IDLE;
+					cs_r <= 1;
+				    end
+				end
+			    end
+			end
 		    end else begin
 			state_counter <= state_counter + 1;
 		    end
@@ -143,7 +160,22 @@ module spi_controller
 			    mosi_r <= din_r[30];
 			end
 			if(sclk_counter + 1 == {mosi_width_r, 1'b0}) begin
-			    state <= RECV_MISO;
+
+			    if(miso_width_r > 0) begin
+				state <= RECV_MISO;
+			    end else begin
+				if(data_delay_r > 0) begin
+				    state <= POST_DATA;
+				end else begin
+				    if(cs_delay_r > 0) begin
+					state <= POST_CS;
+				    end else begin
+					state <= IDLE;
+					cs_r <= 1;
+				    end
+				end
+			    end
+
 			    sclk_counter <= 0;
 			end else begin
 			    sclk_counter <= sclk_counter + 1;
