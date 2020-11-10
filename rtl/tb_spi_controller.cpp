@@ -77,16 +77,16 @@ int main(int argc, char** argv)
     tb->tick();
 
     set_cpol(tb, 0);
-    emit_spi(tb, 5, 0, 0, 1, 1, 16, 16, 0x94a50000, 0x0000FFFF);
+    emit_spi(tb, 5, 0, 0, 1, 1, 16, 16, 0x94a50000, 0xFFFFFFFF);
     
     set_cpol(tb, 1);
-    emit_spi(tb, 5, 1, 0, 1, 1, 16, 16, 0x94a50000, 0x0000FFFF);
+    emit_spi(tb, 5, 1, 0, 1, 1, 16, 16, 0x94a50000, 0xFFFFFFFF);
     
     set_cpol(tb, 0);
-    emit_spi(tb, 5, 0, 1, 1, 1, 16, 16, 0x94a50000, 0x0000FFFF);
+    emit_spi(tb, 5, 0, 1, 1, 1, 16, 16, 0x94a50000, 0xFFFFFFFF);
     
     set_cpol(tb, 1);
-    emit_spi(tb, 5, 1, 1, 1, 1, 16, 16, 0x94a50000, 0x0000FFFF);
+    emit_spi(tb, 5, 1, 1, 1, 1, 16, 16, 0x94a50000, 0xFFFFFFFF);
 
     set_cpol(tb, 0);
     emit_spi(tb, 2, 0, 0, 0, 0, 32, 32, 0x94a53434, 0xFFFFFFFF);

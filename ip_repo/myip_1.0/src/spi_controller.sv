@@ -159,6 +159,13 @@ module spi_controller
 			    din_r <= {din_r[29:0], 1'b0};
 			    mosi_r <= din_r[30];
 			end
+
+			if(cpha_r == 0 && sclk_counter[0] == 0) begin
+			    dout_r <= {dout_r[30:0], MISO};
+			end else if (cpha_r == 1 && sclk_counter[0] == 1) begin
+			    dout_r <= {dout_r[30:0], MISO};
+			end
+
 			if(sclk_counter + 1 == {mosi_width_r, 1'b0}) begin
 
 			    if(miso_width_r > 0) begin
