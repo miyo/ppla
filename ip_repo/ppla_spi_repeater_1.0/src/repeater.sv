@@ -19,7 +19,7 @@ module repeater
     (* MARK_DEBUG="TRUE" *) logic target_kick_r;
     (* MARK_DEBUG="TRUE" *) logic busy_r;
     (* MARK_DEBUG="TRUE" *) logic kick_r;
-    (* MARK_DEBUG="TRUE" *) logic ext_trig_r;
+    (* MARK_DEBUG="TRUE" *) logic [3:0] ext_trig_r;
     (* MARK_DEBUG="TRUE" *) logic [15:0] repetition_r;
     (* MARK_DEBUG="TRUE" *) logic [15:0] post_margin_r;
 
@@ -41,10 +41,10 @@ module repeater
 	    post_margin_r <= 0;
 	    repeat_counter <= 0;
 	    margin_counter <= 0;
-	    ext_trig_r <= 1;
+	    ext_trig_r <= 4'hF;
 	end else begin
 	    kick_r <= KICK;
-	    ext_trig_r <= EXT_TRIG;
+	    ext_trig_r <= {ext_trig_r[2:0], EXT_TRIG};
 	    case(state)
 		IDLE: begin
 		    if(kick_r == 0 && KICK == 1) begin
@@ -64,7 +64,7 @@ module repeater
 			target_kick_r <= 1;
 			repeat_counter <= repeat_counter + 1;
 			state <= WAIT_TARGET;
-		    end else if(MODE == 1 && TARGET_BUSY == 0 && ext_trig_r == 0 && EXT_TRIG == 1) begin
+		    end else if(MODE == 1 && TARGET_BUSY == 0 && ext_trig_r[3] == 0 && ext_trig_r[0] == 1) begin
 			target_kick_r <= 1;
 			repeat_counter <= repeat_counter + 1;
 			state <= WAIT_TARGET;

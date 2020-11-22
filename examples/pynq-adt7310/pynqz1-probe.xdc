@@ -1,11 +1,3 @@
-set_property -dict {PACKAGE_PIN W14 IOSTANDARD LVCMOS33} [get_ports SPI_SCLK_0]
-set_property -dict {PACKAGE_PIN Y14 IOSTANDARD LVCMOS33} [get_ports SPI_MISO_0]
-set_property -dict {PACKAGE_PIN T11 IOSTANDARD LVCMOS33} [get_ports SPI_MOSI_0]
-set_property -dict {PACKAGE_PIN T10 IOSTANDARD LVCMOS33} [get_ports SPI_CS_0]
-set_property -dict {PACKAGE_PIN D19 IOSTANDARD LVCMOS33} [get_ports EXT_TRIG_0]
-
-
-
 create_debug_core u_ila_0 ila
 set_property ALL_PROBE_SAME_MU true [get_debug_cores u_ila_0]
 set_property ALL_PROBE_SAME_MU_CNT 1 [get_debug_cores u_ila_0]
@@ -110,8 +102,8 @@ set_property port_width 1 [get_debug_ports u_ila_0/probe22]
 connect_debug_port u_ila_0/probe22 [get_nets [list design_1_i/ppla_spi_repeater_0/inst/ppla_spi_repeater_int_i/spi_controller_i/dout_valid_r]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe23]
-set_property port_width 1 [get_debug_ports u_ila_0/probe23]
-connect_debug_port u_ila_0/probe23 [get_nets [list design_1_i/ppla_spi_repeater_0/inst/ppla_spi_repeater_int_i/repeater_i/ext_trig_r]]
+set_property port_width 4 [get_debug_ports u_ila_0/probe23]
+connect_debug_port u_ila_0/probe23 [get_nets [list {design_1_i/ppla_spi_repeater_0/inst/ppla_spi_repeater_int_i/repeater_i/ext_trig_r[0]} {design_1_i/ppla_spi_repeater_0/inst/ppla_spi_repeater_int_i/repeater_i/ext_trig_r[1]} {design_1_i/ppla_spi_repeater_0/inst/ppla_spi_repeater_int_i/repeater_i/ext_trig_r[2]} {design_1_i/ppla_spi_repeater_0/inst/ppla_spi_repeater_int_i/repeater_i/ext_trig_r[3]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe24]
 set_property port_width 1 [get_debug_ports u_ila_0/probe24]
