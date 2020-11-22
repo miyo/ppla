@@ -1,6 +1,6 @@
 
 
 /***************************** Include Files *******************************/
-#include "myip.h"
+#include "ppla_spi_repeater.h"
 
 /************************** Function Definitions ***************************/

@@ -14,7 +14,7 @@ LIBSOURCES=*.c
 OUTS = *.o
 
 libs:
-	echo "Compiling myip..."
+	echo "Compiling ppla_spi_repeater..."
 	$(COMPILER) $(COMPILER_FLAGS) $(EXTRA_COMPILER_FLAGS) $(INCLUDES) $(LIBSOURCES)
 	$(ARCHIVER) -r ${RELEASEDIR}/${LIB} ${OUTS}
 	make clean

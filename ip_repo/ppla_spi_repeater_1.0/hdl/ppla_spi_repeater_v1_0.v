@@ -1,7 +1,7 @@
 
 `timescale 1 ns / 1 ps
 
-	module myip_v1_0 #
+	module ppla_spi_repeater_v1_0 #
 	(
 		// Users to add parameters here
 
@@ -59,10 +59,10 @@
 	 input wire EXT_TRIG
 	);
 // Instantiation of Axi Bus Interface S00_AXI
-	myip_v1_0_S00_AXI # ( 
+	ppla_spi_repeater_v1_0_S00_AXI # ( 
 		.C_S_AXI_DATA_WIDTH(C_S00_AXI_DATA_WIDTH),
 		.C_S_AXI_ADDR_WIDTH(C_S00_AXI_ADDR_WIDTH)
-	) myip_v1_0_S00_AXI_inst (
+	) ppla_spi_repeater_v1_0_S00_AXI_inst (
 		.S_AXI_ACLK(s00_axi_aclk),
 		.S_AXI_ARESETN(s00_axi_aresetn),
 		.S_AXI_AWADDR(s00_axi_awaddr),

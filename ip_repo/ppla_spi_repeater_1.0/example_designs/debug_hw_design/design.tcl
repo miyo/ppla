@@ -27,8 +27,8 @@ proc create_ipi_design { offsetfile design_name } {
 	connect_bd_net [get_bd_pins sys_reset_0/slowest_sync_clk] [get_bd_pins sys_clk_0/clk_out1]
 	connect_bd_net [get_bd_pins sys_clk_0/locked] [get_bd_pins sys_reset_0/dcm_locked]
 
-	# Create instance: myip_0, and set properties
-	set myip_0 [ create_bd_cell -type ip -vlnv user.org:user:myip:1.0 myip_0 ]
+	# Create instance: ppla_spi_repeater_0, and set properties
+	set ppla_spi_repeater_0 [ create_bd_cell -type ip -vlnv wasalabo.com:wasalabo:ppla_spi_repeater:1.0 ppla_spi_repeater_0 ]
 
 	# Create instance: jtag_axi_0, and set properties
 	set jtag_axi_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:jtag_axi jtag_axi_0 ]
@@ -49,31 +49,31 @@ proc create_ipi_design { offsetfile design_name } {
 	connect_bd_net [get_bd_pins axi_peri_interconnect/M00_ACLK] [get_bd_pins sys_clk_0/clk_out1]
 	connect_bd_net [get_bd_pins axi_peri_interconnect/M00_ARESETN] [get_bd_pins sys_reset_0/peripheral_aresetn]
 
-	# Connect all clock & reset of myip_0 slave interfaces..
-	connect_bd_intf_net [get_bd_intf_pins axi_peri_interconnect/M00_AXI] [get_bd_intf_pins myip_0/S00_AXI]
-	connect_bd_net [get_bd_pins myip_0/s00_axi_aclk] [get_bd_pins sys_clk_0/clk_out1]
-	connect_bd_net [get_bd_pins myip_0/s00_axi_aresetn] [get_bd_pins sys_reset_0/peripheral_aresetn]
+	# Connect all clock & reset of ppla_spi_repeater_0 slave interfaces..
+	connect_bd_intf_net [get_bd_intf_pins axi_peri_interconnect/M00_AXI] [get_bd_intf_pins ppla_spi_repeater_0/S00_AXI]
+	connect_bd_net [get_bd_pins ppla_spi_repeater_0/s00_axi_aclk] [get_bd_pins sys_clk_0/clk_out1]
+	connect_bd_net [get_bd_pins ppla_spi_repeater_0/s00_axi_aresetn] [get_bd_pins sys_reset_0/peripheral_aresetn]
 
 
 	# Auto assign address
 	assign_bd_address
 
-	# Copy all address to myip_v1_0_include.tcl file
+	# Copy all address to ppla_spi_repeater_v1_0_include.tcl file
 	set bd_path [get_property DIRECTORY [current_project]]/[current_project].srcs/[current_fileset]/bd
 	upvar 1 $offsetfile offset_file
-	set offset_file "${bd_path}/myip_v1_0_include.tcl"
+	set offset_file "${bd_path}/ppla_spi_repeater_v1_0_include.tcl"
 	set fp [open $offset_file "w"]
 	puts $fp "# Configuration address parameters"
 
-	set offset [get_property OFFSET [get_bd_addr_segs /jtag_axi_0/Data/SEG_myip_0_S00_AXI_* ]]
+	set offset [get_property OFFSET [get_bd_addr_segs /jtag_axi_0/Data/SEG_ppla_spi_repeater_0_S00_AXI_* ]]
 	puts $fp "set s00_axi_addr ${offset}"
 
 	close $fp
 }
 
 # Set IP Repository and Update IP Catalogue 
-set ip_path [file dirname [file normalize [get_property XML_FILE_NAME [ipx::get_cores user.org:user:myip:1.0]]]]
-set hw_test_file ${ip_path}/example_designs/debug_hw_design/myip_v1_0_hw_test.tcl
+set ip_path [file dirname [file normalize [get_property XML_FILE_NAME [ipx::get_cores wasalabo.com:wasalabo:ppla_spi_repeater:1.0]]]]
+set hw_test_file ${ip_path}/example_designs/debug_hw_design/ppla_spi_repeater_v1_0_hw_test.tcl
 
 set repo_paths [get_property ip_repo_paths [current_fileset]] 
 if { [lsearch -exact -nocase $repo_paths $ip_path ] == -1 } {
@@ -91,7 +91,7 @@ lappend all_bd $bd_name
 }
 
 for { set i 1 } { 1 } { incr i } {
-	set design_name "myip_v1_0_hw_${i}"
+	set design_name "ppla_spi_repeater_v1_0_hw_${i}"
 	if { [lsearch -exact -nocase $all_bd $design_name ] == -1 } {
 		break
 	}
@@ -112,7 +112,7 @@ puts "1. Generate bitstream"
 puts "2. Setup your targeted board, open hardware manager and open new(or existing) hardware target"
 puts "3. Download generated bitstream"
 puts "4. Run generated hardware test using below command, this invokes basic read/write operation"
-puts "   to every interface present in the peripheral : xilinx.com:user:myip:1.0"
+puts "   to every interface present in the peripheral : wasalabo.com:wasalabo:ppla_spi_repeater:1.0"
 puts "   : source -notrace ${hw_test_file}"
 puts "-------------------------------------------------------------------------------------------------"
 

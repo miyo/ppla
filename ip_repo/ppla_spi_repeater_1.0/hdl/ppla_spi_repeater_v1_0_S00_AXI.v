@@ -1,7 +1,7 @@
 
 `timescale 1 ns / 1 ps
 
-	module myip_v1_0_S00_AXI #
+	module ppla_spi_repeater_v1_0_S00_AXI #
 	(
 		// Users to add parameters here
 

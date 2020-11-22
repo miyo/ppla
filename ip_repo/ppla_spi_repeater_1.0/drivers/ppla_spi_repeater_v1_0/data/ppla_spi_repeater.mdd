@@ -1,0 +1,10 @@
+
+
+OPTION psf_version = 2.1;
+
+BEGIN DRIVER ppla_spi_repeater
+	OPTION supported_peripherals = (ppla_spi_repeater);
+	OPTION copyfiles = all;
+	OPTION VERSION = 1.0;
+	OPTION NAME = ppla_spi_repeater;
+END DRIVER
